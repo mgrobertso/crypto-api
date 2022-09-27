@@ -56,7 +56,7 @@ namespace crypto_api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Cryptos");
+                    b.ToTable("Cryptos", (string)null);
                 });
 #pragma warning restore 612, 618
         }

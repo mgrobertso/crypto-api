@@ -1,10 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
-
+﻿
 namespace crypto_api.Data
 {
     public class DataContext:DbContext
     {
-        public DataContext(DbContextOptions<DataContext> options) :base(options){ }
+        public DataContext(DbContextOptions<DataContext> options) : base(options) { }
 
         public DbSet<Crypto> Cryptos  { get; set; }
 
