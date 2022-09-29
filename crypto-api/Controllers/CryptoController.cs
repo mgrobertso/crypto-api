@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualBasic;
 
 namespace crypto_api.Controllers
 {
+    [EnableCors("CorsPolicy")]
     [ApiController]
     [Route("api/[controller]")]
 

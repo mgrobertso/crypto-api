@@ -1,9 +1,21 @@
 global using crypto_api.Data;
 global using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var cros = "_CrosPolicy";
 // Add services to the container
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name:cros,
+        policy =>
+        {
+            policy.AllowAnyOrigin()
+     .AllowAnyMethod()
+     .AllowAnyHeader();
+        });
+});
 builder.Services.AddControllers().AddNewtonsoftJson();
 builder.Services.AddDbContext<DataContext>(options =>
 {
@@ -22,6 +34,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors(cros);
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
