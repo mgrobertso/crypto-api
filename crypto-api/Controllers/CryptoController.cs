@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Cors;
+﻿using crypto_api.Models;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualBasic;
 
@@ -39,7 +40,8 @@ namespace crypto_api.Controllers
         {
             _context.Cryptos.Add(crypto);
             await _context.SaveChangesAsync();
-            return Ok(await _context.Cryptos.ToListAsync());
+            var addCrypto = await _context.Cryptos.FindAsync(crypto.Id);
+            return Ok(addCrypto);
         }
 
         [HttpPut]
@@ -55,7 +57,7 @@ namespace crypto_api.Controllers
             dbcrypto.Name = Asset.Name;
 
             await _context.SaveChangesAsync();
-            return Ok(await _context.Cryptos.ToListAsync());
+            return NoContent();
         }
 
         [HttpDelete]
@@ -68,7 +70,7 @@ namespace crypto_api.Controllers
             _context.Cryptos.Remove(dbCrypto);
             await _context.SaveChangesAsync();
 
-            return Ok(await _context.Cryptos.ToListAsync());
+            return NoContent();
         }
 
     }

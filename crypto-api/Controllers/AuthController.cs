@@ -1,4 +1,5 @@
 ﻿
+using crypto_api.Models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -8,7 +9,7 @@ using System.Security.Cryptography;
 
 namespace crypto_api.Controllers
 {
-    [EnableCors("CorsPolicy")]
+    [EnableCors("CrosPolicy")]
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
@@ -26,9 +27,12 @@ namespace crypto_api.Controllers
         {
             CreatPasswordHash(Signup.Password, out byte[] passwordHash, out byte[] passwordSalt);
             user.UserName = Signup.Username;
+            user.Email = Signup.Email;
+            user.FirstName = Signup.FirstName;
+            user.LastName = Signup.LastName;    
             user.PasswordHash = passwordHash;
             user.PasswordSalt = passwordSalt;
-            return Ok(user);
+            return Ok("User has been Created");
 
         }
 
@@ -46,7 +50,7 @@ namespace crypto_api.Controllers
             }
 
             string token = CreateToken(user);
-            return Ok(token);
+            return Ok(user.UserName );
         }
 
         private string CreateToken(User user)
