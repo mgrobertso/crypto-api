@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace crypto_api.Migrations
 {
-    public partial class crypto : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -14,27 +14,12 @@ namespace crypto_api.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Last_update = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Last_update = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Symbol = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Image = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Current_price = table.Column<double>(type: "float", nullable: false),
-                    High_24h = table.Column<double>(type: "float", nullable: false),
-                    Low_24h = table.Column<double>(type: "float", nullable: false),
-                    Total_volume = table.Column<double>(type: "float", nullable: false),
-                    market_cap = table.Column<double>(type: "float", nullable: false),
-                    market_cap_rank = table.Column<double>(type: "float", nullable: false),
-                    fully_diluted_valuation = table.Column<double>(type: "float", nullable: false),
-                    price_change_24h = table.Column<double>(type: "float", nullable: false),
-                    price_change_percentage_24h = table.Column<double>(type: "float", nullable: false),
-                    market_cap_change_24h = table.Column<double>(type: "float", nullable: false),
-                    market_cap_change_percentage_24h = table.Column<double>(type: "float", nullable: false),
-                    total_supply = table.Column<double>(type: "float", nullable: false),
-                    max_supply = table.Column<double>(type: "float", nullable: false),
-                    ath = table.Column<double>(type: "float", nullable: false),
-                    ath_change_percentage = table.Column<double>(type: "float", nullable: false),
-                    ath_date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    roi = table.Column<double>(type: "float", nullable: false)
+                    Current_price = table.Column<double>(type: "float", nullable: true),
+                    High_24h = table.Column<double>(type: "float", nullable: true),
+                    Low_24h = table.Column<double>(type: "float", nullable: true),
+                    Total_volume = table.Column<double>(type: "float", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -45,7 +30,7 @@ namespace crypto_api.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),

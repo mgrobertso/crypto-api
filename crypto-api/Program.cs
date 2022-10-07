@@ -1,6 +1,6 @@
-global using crypto_api.Data;
 global using Microsoft.EntityFrameworkCore;
 using crypto_api.Services;
+using crypto_api.Services.crypto_api.Services;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,7 +25,14 @@ builder.Services.AddDbContext<DataContext>(options =>
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddScoped<ICryptoService, CryptoService>();
+builder.Services.AddScoped<CryptoService>();
+
+builder.Services.AddSingleton<GeckoService>();
+
+// Add as hosted service using the instance registered as singleton before
+builder.Services.AddHostedService(
+    provider => provider.GetRequiredService<GeckoService>()
+    );
 
 var app = builder.Build();
 
@@ -40,6 +47,21 @@ app.UseExceptionHandler("/error");
 app.UseCors(cros);
 app.UseHttpsRedirection();
 app.UseAuthorization();
+
+
+app.MapGet("/background", (
+    GeckoService service) =>
+{
+    return new GeckoServiceState(service.IsEnabled);
+});
+app.MapMethods("/background", new[] { "PATCH" },
+    (
+        GeckoServiceState state,
+        GeckoService service) =>{ 
+            service.IsEnabled = state.IsEnabled;
+        }
+    );
+
 
 app.MapControllers();
 

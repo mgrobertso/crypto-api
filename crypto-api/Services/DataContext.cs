@@ -1,9 +1,8 @@
-﻿
-using crypto_api.Models;
+﻿using crypto_api.Models;
 
-namespace crypto_api.Data
+namespace crypto_api.Services
 {
-    public class DataContext:DbContext
+    public class DataContext : DbContext
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options) { }
 

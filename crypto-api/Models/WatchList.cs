@@ -6,8 +6,8 @@ namespace crypto_api.Models
     public class WatchList
     {
         [ForeignKey("Id")] 
-        public string Id { get; set; }
-        public string WatchId { get; set; }
+        public Guid Id { get; set; } 
+        public Guid WatchId { get; set; }
 
         public string Coin { get; } = string.Empty;
     }

@@ -9,53 +9,52 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 DROP TABLE [dbo].[Cryptos];
-DROP TABLE [dbo].[User];
+DROP TABLE [dbo].[Users];
 DROP TABLE [dbo].[WatchList];
 
 GO
-CREATE TABLE [dbo].[Cryptos] (
-    [Id]            NVARCHAR (450) NOT NULL,
-    [Last_update]   NVARCHAR (MAX) NOT NULL,
-    [Name]          NVARCHAR (MAX) NOT NULL,
-    [Symbol]        NVARCHAR (MAX) NOT NULL,
-    [Image]         NVARCHAR (MAX) NOT NULL,
-    [Current_price] FLOAT (53)     NOT NULL,
-    [High_24h]      FLOAT (53)     NOT NULL,
-    [Low_24h]       FLOAT (53)     NOT NULL,
-    [Total_volume]  FLOAT (53)     NOT NULL,
-    [market_cap] float             NOT NULL,
-    [market_cap_rank] float        NOT NULL,
-    [fully_diluted_valuation] float NOT NULL,
-    [price_change_24h] float NOT NULL,
-    [price_change_percentage_24h] float NOT NULL,
-    [market_cap_change_24h] float NOT NULL,
-    [market_cap_change_percentage_24h] float NOT NULL,
-    [total_supply] float NOT NULL,
-    [max_supply] float NOT NULL,
-    [ath] float NOT NULL,
-    [ath_change_percentage] float NOT NULL,
-    [ath_date] datetime2 NOT NULL,
-    [roi] float NOT NULL,
+CREATE TABLE [Cryptos] (
+    [Id] nvarchar(450) NOT NULL,
+    [Last_update] datetime2 NULL,
+    [Name] nvarchar(max) NULL,
+    [Symbol] nvarchar(max) NULL,
+    [Image] nvarchar(max) NULL,
+    [Current_price] float NULL,
+    [High_24h] float NULL,
+    [Low_24h] float NULL,
+    [Total_volume] float NULL,
+    [market_cap] float NULL,
+    [market_cap_rank] float NULL,
+    [fully_diluted_valuation] float NULL,
+    [price_change_24h] float NULL,
+    [price_change_percentage_24h] float NULL,
+    [market_cap_change_24h] float NULL,
+    [market_cap_change_percentage_24h] float NULL,
+    [total_supply] float NULL,
+    [max_supply] float NULL,
+    [ath] float NULL,
+    [ath_change_percentage] float NULL,
+    [ath_date] datetime2 NULL,
     CONSTRAINT [PK_Cryptos] PRIMARY KEY ([Id])
 );
+GO
 
-CREATE TABLE [dbo].[User] (
-    [Id]            NVARCHAR (450) NOT NULL,
-    [FirstName]     NVARCHAR (MAX),
-    [UserName]      NVARCHAR (MAX) NOT NULL,
-    [LastName]      NVARCHAR (MAX),
-    [Email]         NVARCHAR (MAX),
-    [WatchlistId]   NVARCHAR (450),
+CREATE TABLE [Users] (
+    [Id] nvarchar(450) NOT NULL,
+    [FirstName] nvarchar(max) NOT NULL,
+    [LastName] nvarchar(max) NOT NULL,
+    [Email] nvarchar(max) NOT NULL,
+    [UserName] nvarchar(max) NOT NULL,
     [PasswordHash] varbinary(max) NOT NULL,
     [PasswordSalt] varbinary(max) NOT NULL,
     CONSTRAINT [PK_Users] PRIMARY KEY ([Id])
-
 );
+GO
 
-CREATE TABLE [dbo].[WatchList] (
-    [Id]       NVARCHAR (450) NOT NULL,
-    [Coin]     NVARCHAR (MAX) NOT NULL
-     CONSTRAINT [PK_WatchList] PRIMARY KEY ([Id])
+CREATE TABLE [WatchList] (
+    [Id] nvarchar(450) NOT NULL,
+    [WatchId] nvarchar(max) NOT NULL,
+    [Coin] nvarchar(20) null
+    CONSTRAINT [PK_WatchList] PRIMARY KEY ([Id])
 );
-
-
+GO

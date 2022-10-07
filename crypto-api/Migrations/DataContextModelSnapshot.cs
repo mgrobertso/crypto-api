@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using crypto_api.Data;
+using crypto_api.Services;
 
 #nullable disable
 
@@ -27,71 +27,23 @@ namespace crypto_api.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<double>("Current_price")
+                    b.Property<double?>("Current_price")
                         .HasColumnType("float");
 
-                    b.Property<double>("High_24h")
+                    b.Property<double?>("High_24h")
                         .HasColumnType("float");
 
-                    b.Property<string>("Image")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("Last_update")
+                        .HasColumnType("datetime2");
 
-                    b.Property<string>("Last_update")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("Low_24h")
+                    b.Property<double?>("Low_24h")
                         .HasColumnType("float");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Symbol")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("Total_volume")
-                        .HasColumnType("float");
-
-                    b.Property<double>("ath")
-                        .HasColumnType("float");
-
-                    b.Property<double>("ath_change_percentage")
-                        .HasColumnType("float");
-
-                    b.Property<DateTime>("ath_date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<double>("fully_diluted_valuation")
-                        .HasColumnType("float");
-
-                    b.Property<double>("market_cap")
-                        .HasColumnType("float");
-
-                    b.Property<double>("market_cap_change_24h")
-                        .HasColumnType("float");
-
-                    b.Property<double>("market_cap_change_percentage_24h")
-                        .HasColumnType("float");
-
-                    b.Property<double>("market_cap_rank")
-                        .HasColumnType("float");
-
-                    b.Property<double>("max_supply")
-                        .HasColumnType("float");
-
-                    b.Property<double>("price_change_24h")
-                        .HasColumnType("float");
-
-                    b.Property<double>("price_change_percentage_24h")
-                        .HasColumnType("float");
-
-                    b.Property<double>("roi")
-                        .HasColumnType("float");
-
-                    b.Property<double>("total_supply")
+                    b.Property<double?>("Total_volume")
                         .HasColumnType("float");
 
                     b.HasKey("Id");
@@ -101,8 +53,9 @@ namespace crypto_api.Migrations
 
             modelBuilder.Entity("crypto_api.Models.User", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Email")
                         .IsRequired()

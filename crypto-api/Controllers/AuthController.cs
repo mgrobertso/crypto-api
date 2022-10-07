@@ -1,5 +1,6 @@
 ﻿
 using crypto_api.Models;
+using crypto_api.Services;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -16,22 +17,34 @@ namespace crypto_api.Controllers
     {
         public static User user = new User();
         private readonly IConfiguration _configuration;
+        private readonly DataContext _context;
 
-        public AuthController(IConfiguration configuration)
+        public AuthController(IConfiguration configuration, DataContext context)
         {
             _configuration = configuration;
+            _context = context;
         }
 
         [HttpPost("register")]
         public async Task<ActionResult<User>> Register(UserDto Signup)
         {
+            var exstungUser = await _context.Users.FindAsync(Signup.Email);
+            if (exstungUser == null)
+            {
+                return BadRequest("User is already Created");
+            }
             CreatPasswordHash(Signup.Password, out byte[] passwordHash, out byte[] passwordSalt);
+            user.Id = new Guid();
             user.UserName = Signup.Username;
             user.Email = Signup.Email;
             user.FirstName = Signup.FirstName;
             user.LastName = Signup.LastName;    
             user.PasswordHash = passwordHash;
             user.PasswordSalt = passwordSalt;
+
+            _context.Users.Add(user);
+           await _context.SaveChangesAsync();
+            
             return Ok("User has been Created");
 
         }

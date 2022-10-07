@@ -1,4 +1,5 @@
 ﻿using crypto_api.Models;
+using crypto_api.Services;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualBasic;
@@ -41,7 +42,7 @@ namespace crypto_api.Controllers
             _context.Cryptos.Add(crypto);
             await _context.SaveChangesAsync();
             var addCrypto = await _context.Cryptos.FindAsync(crypto.Id);
-            return Ok(addCrypto);
+            return NoContent();
         }
 
         [HttpPut]
