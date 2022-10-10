@@ -36,8 +36,16 @@ namespace crypto_api.Services
                          coinGeckoResponse = JsonConvert.DeserializeObject<List<Crypto>>(apiResponse);
 
                         foreach(Crypto coin in coinGeckoResponse)
-                        { 
-                             _cryptocontext.Add(coin);
+                        {
+                            var Indb = _cryptocontext.Cryptos.Where(x => x.Id == coin.Id);
+                            if(Indb.Any())
+                            {
+                                _cryptocontext.Cryptos.Update(coin);
+                            }
+                            else
+                            {
+                                _cryptocontext.Cryptos.Add(coin);
+                            }
                         }
 
                         await _cryptocontext.SaveChangesAsync();
