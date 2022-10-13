@@ -1,5 +1,6 @@
 ﻿using crypto_api.Models;
 using crypto_api.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualBasic;
@@ -18,6 +19,7 @@ namespace crypto_api.Controllers
         {
             _context = context;
         }
+        [Authorize]
 
         [HttpGet]
         public async Task<ActionResult<List<Crypto>>> Get()

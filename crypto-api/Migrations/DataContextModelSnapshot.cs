@@ -27,11 +27,24 @@ namespace crypto_api.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<double?>("Ath")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("Ath_change_percentage")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime>("Ath_date")
+                        .HasColumnType("datetime2");
+
                     b.Property<double?>("Current_price")
                         .HasColumnType("float");
 
                     b.Property<double?>("High_24h")
                         .HasColumnType("float");
+
+                    b.Property<string>("Image")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Last_update")
                         .HasColumnType("datetime2");
@@ -39,9 +52,37 @@ namespace crypto_api.Migrations
                     b.Property<double?>("Low_24h")
                         .HasColumnType("float");
 
+                    b.Property<double?>("Market_cap")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("Market_cap_change_24h")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("Market_cap_change_percentage_24h")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("Market_cap_rank")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("Max_supply")
+                        .HasColumnType("float");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<double?>("Price_change_24h")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("Price_change_percentage_24h")
+                        .HasColumnType("float");
+
+                    b.Property<string>("Symbol")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double?>("Total_supply")
+                        .HasColumnType("float");
 
                     b.Property<double?>("Total_volume")
                         .HasColumnType("float");
@@ -88,16 +129,33 @@ namespace crypto_api.Migrations
 
             modelBuilder.Entity("crypto_api.Models.WatchList", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("WatchId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("WatchId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("UserId");
+
                     b.ToTable("WatchList");
+                });
+
+            modelBuilder.Entity("crypto_api.Models.WatchList", b =>
+                {
+                    b.HasOne("crypto_api.Models.User", null)
+                        .WithMany("WatchList")
+                        .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("crypto_api.Models.User", b =>
+                {
+                    b.Navigation("WatchList");
                 });
 #pragma warning restore 612, 618
         }

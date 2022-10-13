@@ -16,10 +16,23 @@ namespace crypto_api.Migrations
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Last_update = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Symbol = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Image = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Current_price = table.Column<double>(type: "float", nullable: true),
                     High_24h = table.Column<double>(type: "float", nullable: true),
                     Low_24h = table.Column<double>(type: "float", nullable: true),
-                    Total_volume = table.Column<double>(type: "float", nullable: true)
+                    Total_volume = table.Column<double>(type: "float", nullable: true),
+                    Market_cap = table.Column<double>(type: "float", nullable: true),
+                    Market_cap_rank = table.Column<double>(type: "float", nullable: true),
+                    Price_change_24h = table.Column<double>(type: "float", nullable: true),
+                    Price_change_percentage_24h = table.Column<double>(type: "float", nullable: true),
+                    Market_cap_change_24h = table.Column<double>(type: "float", nullable: true),
+                    Market_cap_change_percentage_24h = table.Column<double>(type: "float", nullable: true),
+                    Total_supply = table.Column<double>(type: "float", nullable: true),
+                    Max_supply = table.Column<double>(type: "float", nullable: true),
+                    Ath = table.Column<double>(type: "float", nullable: true),
+                    Ath_change_percentage = table.Column<double>(type: "float", nullable: true),
+                    Ath_date = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -47,13 +60,24 @@ namespace crypto_api.Migrations
                 name: "WatchList",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    WatchId = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    WatchId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_WatchList", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_WatchList_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_WatchList_UserId",
+                table: "WatchList",
+                column: "UserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -62,10 +86,10 @@ namespace crypto_api.Migrations
                 name: "Cryptos");
 
             migrationBuilder.DropTable(
-                name: "Users");
+                name: "WatchList");
 
             migrationBuilder.DropTable(
-                name: "WatchList");
+                name: "Users");
         }
     }
 }

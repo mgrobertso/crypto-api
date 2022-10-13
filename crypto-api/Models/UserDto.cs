@@ -1,11 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using crypto_api.Services;
 
 namespace crypto_api.Models
 {
     public class UserDto
     {
-        [Required]
-        public Guid Id { get; set; }
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
         public string Username { get; set; } = string.Empty;
@@ -15,4 +14,5 @@ namespace crypto_api.Models
 
 
     }
+
 }

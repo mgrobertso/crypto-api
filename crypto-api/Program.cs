@@ -1,7 +1,14 @@
-global using Microsoft.EntityFrameworkCore;
+﻿global using Microsoft.EntityFrameworkCore;
 using crypto_api.Services;
 using crypto_api.Services.crypto_api.Services;
 using Microsoft.AspNetCore.Cors.Infrastructure;
+using crypto_api.Controllers;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.IdentityModel.JsonWebTokens;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,11 +35,25 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<CryptoService>();
 
 builder.Services.AddSingleton<GeckoService>();
-
 // Add as hosted service using the instance registered as singleton before
 builder.Services.AddHostedService(
     provider => provider.GetRequiredService<GeckoService>()
     );
+builder.Services.AddAuthentication(opt =>
+{
+    opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options => options.TokenValidationParameters = new TokenValidationParameters
+{
+    ValidateIssuer = true,
+    ValidateAudience = true,
+    ValidateLifetime = true,
+    ValidateIssuerSigningKey = true,
+    ValidIssuer = "https://localhost:7037",
+    ValidAudience = "https://localhost:7037",
+    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("this is a getta dont tell anyone"))
+}
+); 
 
 var app = builder.Build();
 
@@ -47,6 +68,7 @@ app.UseExceptionHandler("/error");
 app.UseCors(cros);
 app.UseHttpsRedirection();
 app.UseAuthorization();
+app.UseAuthentication();
 
 
 app.MapGet("/background", (
@@ -64,5 +86,6 @@ app.MapMethods("/background", new[] { "PATCH" },
 
 
 app.MapControllers();
+
 
 app.Run();

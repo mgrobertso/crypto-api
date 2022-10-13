@@ -1,9 +1,10 @@
-﻿
-using crypto_api.Models;
+﻿using crypto_api.Models;
 using crypto_api.Services;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using NuGet.Versioning;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -15,7 +16,6 @@ namespace crypto_api.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        public static User user = new User();
         private readonly IConfiguration _configuration;
         private readonly DataContext _context;
 
@@ -28,22 +28,22 @@ namespace crypto_api.Controllers
         [HttpPost("register")]
         public async Task<ActionResult<User>> Register(UserDto Signup)
         {
-            var exstungUser = await _context.Users.FindAsync(Signup.Email);
-            if (exstungUser == null)
+ 
+            if (_context.Users.Any(user=>user.Email.Equals(Signup.Email)))
             {
                 return BadRequest("User is already Created");
             }
+            User user = new User();
             CreatPasswordHash(Signup.Password, out byte[] passwordHash, out byte[] passwordSalt);
             user.Id = new Guid();
             user.UserName = Signup.Username;
             user.Email = Signup.Email;
             user.FirstName = Signup.FirstName;
-            user.LastName = Signup.LastName;    
+            user.LastName = Signup.LastName;
             user.PasswordHash = passwordHash;
             user.PasswordSalt = passwordSalt;
-
-            _context.Users.Add(user);
-           await _context.SaveChangesAsync();
+            await _context.Users.AddAsync(user);
+            await _context.SaveChangesAsync();
             
             return Ok("User has been Created");
 
@@ -52,6 +52,14 @@ namespace crypto_api.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<string>> Login(UserDto request)
         {
+            var user = _context.Users.Where(user => user.Email == request.Email).Select(user => new User
+            {
+                Email = user.Email,
+                UserName = user.UserName,
+                PasswordHash = user.PasswordHash,
+                PasswordSalt = user.PasswordSalt
+            }).FirstOrDefault();
+  
             if (user.UserName != request.Username)
             {
                 return BadRequest("User not found.");
@@ -63,7 +71,7 @@ namespace crypto_api.Controllers
             }
 
             string token = CreateToken(user);
-            return Ok(user.UserName );
+            return Ok(token);
         }
 
         private string CreateToken(User user)
@@ -75,6 +83,8 @@ namespace crypto_api.Controllers
             var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
             var token = new JwtSecurityToken(
+                issuer:"https://localhost:7037",
+                audience:"https://localhost:7037",
                 claims: claims,
                 expires: DateTime.UtcNow.AddHours(1),
                 signingCredentials: cred
