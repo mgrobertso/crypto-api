@@ -1,8 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore.Migrations.Operations;
-using System.ComponentModel.DataAnnotations;
-
-namespace crypto_api.Models
+﻿namespace Crypto.Data.Models
 {
     public class User
     {
@@ -14,7 +10,7 @@ namespace crypto_api.Models
         public byte[] PasswordHash { get; set; }
         public byte[] PasswordSalt { get; set; }
 
-        public List<WatchList> WatchList { get; set; }
+        public List<WatchList> WatchList { get; set; } = new List<WatchList>();
 
     }
 

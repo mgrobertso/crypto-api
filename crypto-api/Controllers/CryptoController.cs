@@ -1,9 +1,9 @@
-﻿using crypto_api.Models;
-using crypto_api.Services;
-using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Crypto.Core.DTOs;
+using Crypto.Data.Models;
+using crypto_api.Repository;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.VisualBasic;
 
 namespace crypto_api.Controllers
 {
@@ -13,67 +13,51 @@ namespace crypto_api.Controllers
 
     public class CryptoController : ControllerBase
     {
-        private readonly DataContext _context;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly ILogger<CryptoController> _logger;
+        private readonly IMapper _mapper;
 
-        public CryptoController(DataContext context)
+        public CryptoController(IUnitOfWork unitOfWork, ILogger<CryptoController> logger, IMapper mapper)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
+            _logger = logger;
+            _mapper = mapper;
         }
-        [Authorize]
 
         [HttpGet]
-        public async Task<ActionResult<List<Crypto>>> Get()
+        public async Task<ActionResult> Get()
         {
+            try
+            {
+                var cryptos = await _unitOfWork.Cryptos.GetAll();
+                var result = _mapper.Map<IList<CryptoModel>>(cryptos);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error{nameof(Get)}");
+                return StatusCode(500, "Server Error, try again later");
+            }
 
-            return Ok( await _context.Cryptos.ToListAsync());
-        }
-        [HttpGet("{id}")]
 
-        public async Task<ActionResult<Crypto>> Get(string id)
-        {
-            var crypto = await _context.Cryptos.FindAsync(id);
-            if (crypto == null)
-                return BadRequest("Crypto not Found");
-            return Ok(crypto);
-        }
-
-
-        [HttpPost]
-        public async Task<ActionResult<List<Crypto>>> AddCrypto(Crypto crypto)
-        {
-            _context.Cryptos.Add(crypto);
-            await _context.SaveChangesAsync();
-            var addCrypto = await _context.Cryptos.FindAsync(crypto.Id);
-            return NoContent();
         }
 
-        [HttpPut]
-        public async Task<ActionResult<List<Crypto>>> UpdateCrypto(Crypto Asset)
-        {
-            var dbcrypto = await _context.Cryptos.FindAsync(Asset.Id);
-            if (dbcrypto == null)
-                return BadRequest("Crypto not Found");
+         [HttpGet("{id}")]
 
-            dbcrypto.Current_price = Asset.Current_price;
-            dbcrypto.High_24h = Asset.High_24h;
-            dbcrypto.Low_24h = Asset.Low_24h;
-            dbcrypto.Name = Asset.Name;
+         public async Task<ActionResult> Get(string id)
+         {
 
-            await _context.SaveChangesAsync();
-            return NoContent();
-        }
-
-        [HttpDelete]
-        public async Task<ActionResult<List<Crypto>>> Delete(string id)
-        {
-            var  dbCrypto = await _context.Cryptos.FindAsync(id);
-            if (dbCrypto == null)
-                return BadRequest("Crypto not Found");
-
-            _context.Cryptos.Remove(dbCrypto);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            try
+            {
+                var crypto = await _unitOfWork.Cryptos.Get(x=>x.Id == id);
+                var result = _mapper.Map<CryptoModel>(crypto);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error{nameof(Get)}");
+                return StatusCode(500, "Server Error, try again later");
+            }
         }
 
     }

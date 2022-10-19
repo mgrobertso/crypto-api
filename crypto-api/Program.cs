@@ -1,11 +1,8 @@
 ﻿global using Microsoft.EntityFrameworkCore;
-using crypto_api.Services;
-using crypto_api.Services.crypto_api.Services;
-using Microsoft.AspNetCore.Cors.Infrastructure;
-using crypto_api.Controllers;
-using System.IdentityModel.Tokens.Jwt;
-using Microsoft.IdentityModel.JsonWebTokens;
-using Microsoft.AspNetCore.Authentication;
+using AutoMapper;
+using Crypto.Core.Services;
+using Crypto.Data;
+using crypto_api.Repository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -16,13 +13,13 @@ var cros = "CrosPolicy";
 // Add services to the container
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(name:cros,
+    options.AddPolicy(name: cros,
         policy =>
       {
-      policy.WithOrigins("http://localhost:4200")
-     .AllowAnyMethod()
-     .AllowAnyHeader();
-        });
+          policy.WithOrigins("http://localhost:4200")
+         .AllowAnyMethod()
+         .AllowAnyHeader();
+      });
 });
 builder.Services.AddControllers();
 builder.Services.AddDbContext<DataContext>(options =>
@@ -33,12 +30,18 @@ builder.Services.AddDbContext<DataContext>(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<CryptoService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+//builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddAutoMapper(typeof(Mapper));
+builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
+builder.Services.AddHttpClient();
 
 builder.Services.AddSingleton<GeckoService>();
 // Add as hosted service using the instance registered as singleton before
 builder.Services.AddHostedService(
     provider => provider.GetRequiredService<GeckoService>()
     );
+
 builder.Services.AddAuthentication(opt =>
 {
     opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -53,7 +56,7 @@ builder.Services.AddAuthentication(opt =>
     ValidAudience = "https://localhost:7037",
     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("this is a getta dont tell anyone"))
 }
-); 
+);
 
 var app = builder.Build();
 
@@ -64,7 +67,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseExceptionHandler("/error");
+app.UseExceptionHandler("/Error");
 app.UseCors(cros);
 app.UseHttpsRedirection();
 app.UseAuthorization();
@@ -79,9 +82,15 @@ app.MapGet("/background", (
 app.MapMethods("/background", new[] { "PATCH" },
     (
         GeckoServiceState state,
-        GeckoService service) =>{ 
-            service.IsEnabled = state.IsEnabled;
+        GeckoService service) =>
+    {
+        if (state is null)
+        {
+            throw new ArgumentNullException(nameof(state));
         }
+
+        service.IsEnabled = state.IsEnabled;
+    }
     );
 
 

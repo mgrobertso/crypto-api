@@ -1,13 +1,11 @@
-﻿using crypto_api.Models;
-using crypto_api.Services;
+﻿using AutoMapper;
+using Crypto.Core.DTOs;
+using Crypto.Core.Services;
+using Crypto.Data;
+using Crypto.Data.Models;
+using crypto_api.Repository;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using NuGet.Versioning;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Security.Cryptography;
 
 namespace crypto_api.Controllers
 {
@@ -17,102 +15,41 @@ namespace crypto_api.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IConfiguration _configuration;
-        private readonly DataContext _context;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
+        private readonly AuthService _authService;
 
-        public AuthController(IConfiguration configuration, DataContext context)
+        public AuthController(IConfiguration configuration, IUnitOfWork unitOfWork, IMapper mapper,AuthService authService)
         {
             _configuration = configuration;
-            _context = context;
+            _unitOfWork = unitOfWork;
+            _mapper = mapper;
+            _authService = authService;
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult<User>> Register(UserDto Signup)
+        public async Task<ActionResult<User>> Register(CreateUserDto Signup)
         {
- 
-            if (_context.Users.Any(user=>user.Email.Equals(Signup.Email)))
-            {
-                return BadRequest("User is already Created");
-            }
-            User user = new User();
-            CreatPasswordHash(Signup.Password, out byte[] passwordHash, out byte[] passwordSalt);
-            user.Id = new Guid();
-            user.UserName = Signup.Username;
-            user.Email = Signup.Email;
-            user.FirstName = Signup.FirstName;
-            user.LastName = Signup.LastName;
-            user.PasswordHash = passwordHash;
-            user.PasswordSalt = passwordSalt;
-            await _context.Users.AddAsync(user);
-            await _context.SaveChangesAsync();
-            
-            return Ok("User has been Created");
+            var newUser = await _authService.Register(Signup);
 
+
+            return Ok(new RegisterResponse
+            {
+                Id = newUser.Id,
+                Firstname = newUser.FirstName,
+                Lastname = newUser.LastName,
+                Username = newUser.UserName,
+                Email = newUser.Email
+            });
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<string>> Login(UserDto request)
+        public async Task<ActionResult<string>> Login(LoginUserDto request)
         {
-            var user = _context.Users.Where(user => user.Email == request.Email).Select(user => new User
-            {
-                Email = user.Email,
-                UserName = user.UserName,
-                PasswordHash = user.PasswordHash,
-                PasswordSalt = user.PasswordSalt
-            }).FirstOrDefault();
-  
-            if (user.UserName != request.Username)
-            {
-                return BadRequest("User not found.");
-            }
-
-            if (!VeriftyPasswordHash(request.Password, user.PasswordHash, user.PasswordSalt))
-            {
-                return BadRequest("Wrong Password");
-            }
-
-            string token = CreateToken(user);
-            return Ok(token);
-        }
-
-        private string CreateToken(User user)
-        {
-            List<Claim> claims = new List<Claim> { 
-                new Claim(ClaimTypes.Name, user.UserName) };
-
-            var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_configuration.GetSection("AppSettings:Token").Value));
-            var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
-
-            var token = new JwtSecurityToken(
-                issuer:"https://localhost:7037",
-                audience:"https://localhost:7037",
-                claims: claims,
-                expires: DateTime.UtcNow.AddHours(1),
-                signingCredentials: cred
-                );
-
-            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
-            return jwt;
+            var loginResponse = _authService.Login(request.Username, request.Password);
+            return Ok(loginResponse);
         }
 
 
-        private void CreatPasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
-        {
-            using (var hmac = new HMACSHA512())
-            {
-                passwordSalt = hmac.Key;
-                passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-            }
-        }
-
-        private bool VeriftyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
-        {
-            using (var hmac = new HMACSHA512(passwordSalt))
-            {
-                var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-                return computedHash.SequenceEqual(passwordHash);
-            }
-
-
-        }
     }
 }

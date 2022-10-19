@@ -3,14 +3,14 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace crypto_api.Migrations
+namespace Crypto.Data.Migrations
 {
-    public partial class init : Migration
+    public partial class initialcreation : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Cryptos",
+                name: "Crypto",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -36,7 +36,7 @@ namespace crypto_api.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Cryptos", x => x.Id);
+                    table.PrimaryKey("PK_Crypto", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -60,13 +60,14 @@ namespace crypto_api.Migrations
                 name: "WatchList",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     WatchId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Coin = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_WatchList", x => x.Id);
+                    table.PrimaryKey("PK_WatchList", x => x.WatchId);
                     table.ForeignKey(
                         name: "FK_WatchList_Users_UserId",
                         column: x => x.UserId,
@@ -83,7 +84,7 @@ namespace crypto_api.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Cryptos");
+                name: "Crypto");
 
             migrationBuilder.DropTable(
                 name: "WatchList");

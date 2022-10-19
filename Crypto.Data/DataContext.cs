@@ -1,14 +1,17 @@
-﻿using crypto_api.Models;
+﻿
+using Crypto.Data.Models;
+using Microsoft.EntityFrameworkCore;
 
-namespace crypto_api.Services
+namespace Crypto.Data
 {
     public class DataContext : DbContext
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options) { }
 
-        public DbSet<Crypto> Cryptos { get; set; }
+        public DbSet<CryptoModel> Crypto { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<WatchList> WatchList { get; set; }
+
 
     }
 }

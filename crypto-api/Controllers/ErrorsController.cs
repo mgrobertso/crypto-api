@@ -5,6 +5,6 @@ namespace crypto_api.Controllers
     public class ErrorsController : ControllerBase
     {
 
-   
+
     }
 }
