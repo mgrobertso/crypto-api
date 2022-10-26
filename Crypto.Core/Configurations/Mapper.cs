@@ -11,7 +11,10 @@ namespace Crypto.Core.Configurations
             CreateMap<User, UserDto>().ReverseMap();
             CreateMap<User, CreateUserDto>().ReverseMap();
             CreateMap<User, LoginUserDto>().ReverseMap();
+            CreateMap<User, LoginUserDto>().ReverseMap();
+            CreateMap<CryptoDto,CryptoModel>().ReverseMap();
             CreateMap<WatchList, WatchListDto>().ReverseMap();
         }
+        
     }
 }

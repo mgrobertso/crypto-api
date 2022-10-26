@@ -2,10 +2,10 @@
 using AutoMapper;
 using Crypto.Core.Services;
 using Crypto.Data;
-using crypto_api.Repository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Mapper = Crypto.Core.Configurations.Mapper;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,14 +26,18 @@ builder.Services.AddDbContext<DataContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+
+var config = new MapperConfiguration(cfg=>
+{
+    cfg.AddProfile(new Mapper());
+});
+var Mapper = config.CreateMapper();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddScoped<CryptoService>();
+builder.Services.AddScoped<ICryptoService, CryptoService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
-//builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-builder.Services.AddAutoMapper(typeof(Mapper));
-builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
+builder.Services.AddSingleton(Mapper);
 builder.Services.AddHttpClient();
 
 builder.Services.AddSingleton<GeckoService>();

@@ -1,4 +1,5 @@
-﻿using Crypto.Core.DTOs;
+﻿using AutoMapper;
+using Crypto.Core.DTOs;
 using Crypto.Data;
 using Crypto.Data.Models;
 using Microsoft.Extensions.Configuration;
@@ -15,12 +16,14 @@ namespace Crypto.Core.Services
         private readonly DataContext _context;
         private readonly ILogger<CryptoService> _logger;
         private readonly IConfiguration _configuration;
+        private readonly IMapper _mapper;
 
-        public AuthService(DataContext context, ILogger<CryptoService> _logger, IConfiguration configuration)
+        public AuthService(DataContext context, ILogger<CryptoService> _logger, IConfiguration configuration, IMapper mapper)
         {
             _context = context;
             this._logger = _logger;
             _configuration = configuration;
+            _mapper = mapper;
         }
 
         private string CreateToken(User user)
@@ -64,15 +67,16 @@ namespace Crypto.Core.Services
         }
 
 
-        public User GetUserId(Guid id)
+        public UserDto GetUserId(Guid id)
         {
             var user = _context.Users.SingleOrDefault(x => x.Id == id);
+            var mappedUser =_mapper.Map<UserDto>(user);
 
             if (user == null)
             {
                 throw new NotImplementedException();
             }
-            return user;
+            return mappedUser;
 
         }
 

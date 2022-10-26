@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Crypto.Data.Migrations
 {
-    public partial class initialcreation : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -13,30 +13,30 @@ namespace Crypto.Data.Migrations
                 name: "Crypto",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Last_update = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Symbol = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Image = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Current_price = table.Column<double>(type: "float", nullable: true),
-                    High_24h = table.Column<double>(type: "float", nullable: true),
-                    Low_24h = table.Column<double>(type: "float", nullable: true),
-                    Total_volume = table.Column<double>(type: "float", nullable: true),
-                    Market_cap = table.Column<double>(type: "float", nullable: true),
-                    Market_cap_rank = table.Column<double>(type: "float", nullable: true),
-                    Price_change_24h = table.Column<double>(type: "float", nullable: true),
-                    Price_change_percentage_24h = table.Column<double>(type: "float", nullable: true),
-                    Market_cap_change_24h = table.Column<double>(type: "float", nullable: true),
-                    Market_cap_change_percentage_24h = table.Column<double>(type: "float", nullable: true),
-                    Total_supply = table.Column<double>(type: "float", nullable: true),
-                    Max_supply = table.Column<double>(type: "float", nullable: true),
-                    Ath = table.Column<double>(type: "float", nullable: true),
-                    Ath_change_percentage = table.Column<double>(type: "float", nullable: true),
-                    Ath_date = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    last_update = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    symbol = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    image = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    current_price = table.Column<double>(type: "float", nullable: false),
+                    high_24h = table.Column<double>(type: "float", nullable: false),
+                    low_24h = table.Column<double>(type: "float", nullable: false),
+                    total_volume = table.Column<double>(type: "float", nullable: false),
+                    market_cap = table.Column<double>(type: "float", nullable: false),
+                    market_cap_rank = table.Column<double>(type: "float", nullable: false),
+                    price_change_24h = table.Column<double>(type: "float", nullable: false),
+                    price_change_percentage_24h = table.Column<double>(type: "float", nullable: false),
+                    market_cap_change_24h = table.Column<double>(type: "float", nullable: false),
+                    market_cap_change_percentage_24h = table.Column<double>(type: "float", nullable: false),
+                    total_supply = table.Column<double>(type: "float", nullable: false),
+                    max_supply = table.Column<double>(type: "float", nullable: false),
+                    ath = table.Column<double>(type: "float", nullable: false),
+                    ath_change_percentage = table.Column<double>(type: "float", nullable: false),
+                    ath_date = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Crypto", x => x.Id);
+                    table.PrimaryKey("PK_Crypto", x => x.id);
                 });
 
             migrationBuilder.CreateTable(

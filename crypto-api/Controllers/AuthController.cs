@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
 using Crypto.Core.DTOs;
 using Crypto.Core.Services;
-using Crypto.Data;
 using Crypto.Data.Models;
-using crypto_api.Repository;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,14 +13,12 @@ namespace crypto_api.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IConfiguration _configuration;
-        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        private readonly AuthService _authService;
+        private readonly IAuthService _authService;
 
-        public AuthController(IConfiguration configuration, IUnitOfWork unitOfWork, IMapper mapper,AuthService authService)
+        public AuthController(IConfiguration configuration, IMapper mapper,IAuthService authService)
         {
             _configuration = configuration;
-            _unitOfWork = unitOfWork;
             _mapper = mapper;
             _authService = authService;
         }

@@ -1,8 +1,10 @@
-﻿using Crypto.Data;
+﻿using AutoMapper;
+using Crypto.Core.DTOs;
+using Crypto.Data;
 using Crypto.Data.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using System.Net.Http;
+using System.Text.Json;
 
 namespace Crypto.Core.Services
 {
@@ -10,56 +12,71 @@ namespace Crypto.Core.Services
     {
         private readonly DataContext _context;
         private readonly ILogger<CryptoService> _logger;
-        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly IHttpClientFactory _clientFactory;
+        private readonly IMapper _mapper;
 
-        public CryptoService(DataContext context, ILogger<CryptoService> _logger, IHttpClientFactory httpClientFactory)
+        public CryptoService(DataContext context, ILogger<CryptoService> logger, IHttpClientFactory clientFactory, IMapper mapper)
         {
             _context = context;
-            this._logger = _logger;
-            _httpClientFactory = httpClientFactory;
+            _logger = logger;
+            _clientFactory = clientFactory;
+            _mapper = mapper;
         }
+
 
         public async Task GetCryptoAsync(string path)
         {
-            List<CryptoModel> coinGeckoResponse;
-            await Task.Delay(10);
+            var httpClient = _clientFactory.CreateClient();
 
-            var httpClient = _httpClientFactory.CreateClient();
+            await Task.Delay(30);
 
+            List<CryptoDto> coinGeckoResponse;
 
             var response = await httpClient.GetAsync(path);
 
-
-            string apiResponse = await response.Content.ReadAsStringAsync();
+            var apiResponse =  await response.Content.ReadAsStringAsync();
 
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
-                coinGeckoResponse = JsonConvert.DeserializeObject<List<CryptoModel>>(apiResponse);
 
-                foreach (CryptoModel coin in coinGeckoResponse)
+                coinGeckoResponse= JsonSerializer.Deserialize<List<CryptoDto>>(apiResponse);
+                
+                
+
+                foreach (var coin in coinGeckoResponse)
                 {
-                    var Indb = _context.Crypto.Where(x => x.Id == coin.Id);
+                    var mappedCoin = _mapper.Map<CryptoModel>(coin);
+
+                    var Indb = _context.Crypto.Where(x => x.id == mappedCoin.id);
+
                     if (Indb.Any())
                     {
-                        _context.Crypto.Update(coin);
+                        _context.Crypto.Update(mappedCoin);
                     }
                     else
                     {
-                        _context.Crypto.Add(coin);
+                        _context.Crypto.Add(mappedCoin);
                     }
+                    await _context.SaveChangesAsync();
                 }
-
-                await _context.SaveChangesAsync();
-
             }
             else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
             {
-
+                throw new NotImplementedException();
             }
-
-
-
         }
 
+        public async Task<CryptoModel> Get(string id)
+        {
+            var crypto = await _context.Crypto.Where(x => x.id == id).FirstOrDefaultAsync();
+
+            return crypto;
+        }
+
+        public async Task<List<CryptoModel>> GetAll()
+        {
+            List<CryptoModel> cryptos = await _context.Crypto.ToListAsync();
+            return cryptos;
+        }
     }
 }

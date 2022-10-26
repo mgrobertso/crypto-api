@@ -13,5 +13,14 @@ namespace Crypto.Data
         public DbSet<WatchList> WatchList { get; set; }
 
 
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            builder.Entity<CryptoModel>(entity =>
+            {
+                entity.Property(e => e.id).ValueGeneratedOnAdd();
+            });
+        }
+
+
     }
 }

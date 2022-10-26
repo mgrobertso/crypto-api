@@ -24,70 +24,71 @@ namespace Crypto.Data.Migrations
 
             modelBuilder.Entity("Crypto.Data.Models.CryptoModel", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<string>("id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<double?>("Ath")
+                    b.Property<double>("ath")
                         .HasColumnType("float");
 
-                    b.Property<double?>("Ath_change_percentage")
+                    b.Property<double>("ath_change_percentage")
                         .HasColumnType("float");
 
-                    b.Property<DateTime>("Ath_date")
+                    b.Property<DateTime>("ath_date")
                         .HasColumnType("datetime2");
 
-                    b.Property<double?>("Current_price")
+                    b.Property<double>("current_price")
                         .HasColumnType("float");
 
-                    b.Property<double?>("High_24h")
+                    b.Property<double>("high_24h")
                         .HasColumnType("float");
 
-                    b.Property<string>("Image")
+                    b.Property<string>("image")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("Last_update")
+                    b.Property<DateTime>("last_update")
                         .HasColumnType("datetime2");
 
-                    b.Property<double?>("Low_24h")
+                    b.Property<double>("low_24h")
                         .HasColumnType("float");
 
-                    b.Property<double?>("Market_cap")
+                    b.Property<double>("market_cap")
                         .HasColumnType("float");
 
-                    b.Property<double?>("Market_cap_change_24h")
+                    b.Property<double>("market_cap_change_24h")
                         .HasColumnType("float");
 
-                    b.Property<double?>("Market_cap_change_percentage_24h")
+                    b.Property<double>("market_cap_change_percentage_24h")
                         .HasColumnType("float");
 
-                    b.Property<double?>("Market_cap_rank")
+                    b.Property<double>("market_cap_rank")
                         .HasColumnType("float");
 
-                    b.Property<double?>("Max_supply")
+                    b.Property<double>("max_supply")
                         .HasColumnType("float");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double?>("Price_change_24h")
+                    b.Property<double>("price_change_24h")
                         .HasColumnType("float");
 
-                    b.Property<double?>("Price_change_percentage_24h")
+                    b.Property<double>("price_change_percentage_24h")
                         .HasColumnType("float");
 
-                    b.Property<string>("Symbol")
+                    b.Property<string>("symbol")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double?>("Total_supply")
+                    b.Property<double>("total_supply")
                         .HasColumnType("float");
 
-                    b.Property<double?>("Total_volume")
+                    b.Property<double>("total_volume")
                         .HasColumnType("float");
 
-                    b.HasKey("Id");
+                    b.HasKey("id");
 
                     b.ToTable("Crypto");
                 });
