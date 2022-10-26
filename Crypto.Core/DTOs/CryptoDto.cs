@@ -12,7 +12,7 @@ namespace Crypto.Core.DTOs
         public double? market_cap { get; set; }
         public double? market_cap_rank { get; set; }
         public double? fully_diluted_valuation { get; }
-        public DateTime last_update { get; set; } 
+        public DateTime? last_update { get; set; } 
         public double? high_24h { get; set; }
         public double? low_24h { get; set; } 
         public double? total_volume { get; set; }
@@ -26,7 +26,7 @@ namespace Crypto.Core.DTOs
         public double? max_supply { get; set; }
         public double? ath { get; set; } 
         public double? ath_change_percentage { get; set; } 
-        public DateTime ath_date { get; set; } 
+        public DateTime? ath_date { get; set; } 
 
     }
 }

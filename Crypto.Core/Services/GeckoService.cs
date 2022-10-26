@@ -8,9 +8,10 @@ namespace Crypto.Core.Services
     {
 
         private readonly ILogger<GeckoService> _logger;
-        private readonly TimeSpan _period = TimeSpan.FromSeconds(30);
+        private readonly TimeSpan _period = TimeSpan.FromSeconds(5);
         private readonly IServiceScopeFactory _factory;
         private int _executionCount = 0;
+        private int pageNumber =1;
         public bool IsEnabled { get; set; }
 
         public GeckoService(ILogger<GeckoService> logger, IServiceScopeFactory factory)
@@ -30,11 +31,18 @@ namespace Crypto.Core.Services
                     {
                         await using AsyncServiceScope asyncScope = _factory.CreateAsyncScope();
                         ICryptoService cryptoService = asyncScope.ServiceProvider.GetRequiredService<ICryptoService>();
-                        await cryptoService.GetCryptoAsync("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=1&sparkline=false");
-                        var page = 2;
+                        bool bContinue = await cryptoService.GetCryptoAsync("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=" +pageNumber+"&sparkline=false");
+                        if (bContinue)
+                        {
+                            pageNumber++;
+                        }
+                        else
+                        {
+                            pageNumber = 1;
+                        }
                         _executionCount++;
                         _logger.LogInformation(
-                            $"Executed geckoservice - Count: {_executionCount}");
+                            $"Executed geckoservice - Count:{_executionCount} Page:{pageNumber}");
                     }
                     else
                     {

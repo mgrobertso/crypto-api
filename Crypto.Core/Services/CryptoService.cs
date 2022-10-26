@@ -24,11 +24,11 @@ namespace Crypto.Core.Services
         }
 
 
-        public async Task GetCryptoAsync(string path)
+        public async Task<bool> GetCryptoAsync(string path)
         {
             var httpClient = _clientFactory.CreateClient();
 
-            await Task.Delay(30);
+            await Task.Delay(5);
 
             List<CryptoDto> coinGeckoResponse;
 
@@ -38,11 +38,12 @@ namespace Crypto.Core.Services
 
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
-
                 coinGeckoResponse= JsonSerializer.Deserialize<List<CryptoDto>>(apiResponse);
-                
-                
-
+                _logger.LogInformation(coinGeckoResponse.Count.ToString());
+                if(coinGeckoResponse.Count==0)
+                {
+                    return false;
+                }
                 foreach (var coin in coinGeckoResponse)
                 {
                     var mappedCoin = _mapper.Map<CryptoModel>(coin);
@@ -58,12 +59,16 @@ namespace Crypto.Core.Services
                         _context.Crypto.Add(mappedCoin);
                     }
                     await _context.SaveChangesAsync();
+                    
                 }
+                return true;
             }
             else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
             {
                 throw new NotImplementedException();
             }
+
+            return false;
         }
 
         public async Task<CryptoModel> Get(string id)
