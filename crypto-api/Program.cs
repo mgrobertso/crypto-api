@@ -37,6 +37,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<ICryptoService, CryptoService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IWatchListService, WatchListService>();
 builder.Services.AddSingleton(Mapper);
 builder.Services.AddHttpClient();
 
@@ -74,8 +75,9 @@ if (app.Environment.IsDevelopment())
 app.UseExceptionHandler("/Error");
 app.UseCors(cros);
 app.UseHttpsRedirection();
-app.UseAuthorization();
 app.UseAuthentication();
+app.UseAuthorization();
+
 
 
 app.MapGet("/background", (

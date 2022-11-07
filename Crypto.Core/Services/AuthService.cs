@@ -5,9 +5,11 @@ using Crypto.Data.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using NuGet.Common;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
+using System.Xml.Linq;
 
 namespace Crypto.Core.Services
 {
@@ -29,7 +31,7 @@ namespace Crypto.Core.Services
         private string CreateToken(User user)
         {
             List<Claim> claims = new List<Claim> {
-                new Claim(ClaimTypes.Name, user.UserName) };
+                new Claim(ClaimTypes.NameIdentifier,user.Id.ToString()) };
 
             var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_configuration.GetSection("AppSettings:Token").Value));
             var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
@@ -39,6 +41,7 @@ namespace Crypto.Core.Services
                 audience: "https://localhost:7037",
                 claims: claims,
                 expires: DateTime.UtcNow.AddHours(1),
+                //token system 
                 signingCredentials: cred
                 );
 
@@ -91,18 +94,25 @@ namespace Crypto.Core.Services
                 PasswordSalt = user.PasswordSalt
             }).FirstOrDefault();
 
-            if (user.UserName != Username)
+            if(user == null)
+            {
+                throw new Exception("user not found");
+            }
+
+            if (user.UserName != Username )
             {
                 throw new Exception("User not found.");
             }
 
             if (!VeriftyPasswordHash(Password, user.PasswordHash, user.PasswordSalt))
             {
-                throw new Exception("Wrong Password");
+            throw new Exception("Wrong Password");
             }
-            string token = CreateToken(user);
 
+
+            string token = CreateToken(user);
             return (new AuthenticatedResponse { Token = token });
+
         }
 
 
@@ -113,6 +123,8 @@ namespace Crypto.Core.Services
             {
                 throw new Exception("User is already Created");
             }
+   
+
             User user = new User();
             user.Id = new Guid();
             user.UserName = NewUser.Username;

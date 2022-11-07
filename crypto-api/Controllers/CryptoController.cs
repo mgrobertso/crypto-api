@@ -2,6 +2,7 @@
 using Crypto.Core.DTOs;
 using Crypto.Core.Services;
 using Crypto.Data.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,14 +24,14 @@ namespace crypto_api.Controllers
             _mapper = mapper;
             _cryptoService = cryptoService;
         }
-
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult> Get()
         {
             try
             {
-                var cryptos =  await _cryptoService.GetAll();
-                var result = _mapper.Map<List<CryptoModel>>(cryptos);
+                var cryptos =  await _cryptoService.GetTrend();
+                var result = _mapper.Map<List<CryptoDto>>(cryptos);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -40,7 +41,8 @@ namespace crypto_api.Controllers
             }
         }
 
-         [HttpGet("{id}")]
+        [a]
+        [HttpGet("{id}")]
 
          public async Task<ActionResult> Get(string id)
          {
@@ -48,7 +50,7 @@ namespace crypto_api.Controllers
             try
             {
                 var crypto =  await _cryptoService.Get(id);
-                var result = _mapper.Map<CryptoModel>(crypto);
+                var result = _mapper.Map<CryptoDto>(crypto);
                 return Ok(result);
             }
             catch (Exception ex)

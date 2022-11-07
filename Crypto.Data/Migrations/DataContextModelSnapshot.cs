@@ -22,6 +22,60 @@ namespace Crypto.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
+            modelBuilder.Entity("Crypto.Data.Models.CryptoDetails", b =>
+                {
+                    b.Property<string>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("_market_Dataid")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int?>("asset_platform_id")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("block_time_in_minutes")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("hashing_algorithm")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("market_cap_rank")
+                        .HasColumnType("int");
+
+                    b.Property<string>("name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("symbol")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("_market_Dataid");
+
+                    b.ToTable("Details");
+                });
+
+            modelBuilder.Entity("Crypto.Data.Models.CryptoDetails+market_data", b =>
+                {
+                    b.Property<string>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int?>("current_price")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("high_24h")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("low_24h")
+                        .HasColumnType("int");
+
+                    b.HasKey("id");
+
+                    b.ToTable("market_data");
+                });
+
             modelBuilder.Entity("Crypto.Data.Models.CryptoModel", b =>
                 {
                     b.Property<string>("id")
@@ -149,6 +203,15 @@ namespace Crypto.Data.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("WatchList");
+                });
+
+            modelBuilder.Entity("Crypto.Data.Models.CryptoDetails", b =>
+                {
+                    b.HasOne("Crypto.Data.Models.CryptoDetails+market_data", "_market_Data")
+                        .WithMany()
+                        .HasForeignKey("_market_Dataid");
+
+                    b.Navigation("_market_Data");
                 });
 
             modelBuilder.Entity("Crypto.Data.Models.WatchList", b =>

@@ -12,13 +12,11 @@ namespace crypto_api.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
         private readonly IAuthService _authService;
 
-        public AuthController(IConfiguration configuration, IMapper mapper,IAuthService authService)
+        public AuthController( IMapper mapper, IAuthService authService)
         {
-            _configuration = configuration;
             _mapper = mapper;
             _authService = authService;
         }
@@ -28,16 +26,16 @@ namespace crypto_api.Controllers
         {
             var newUser = await _authService.Register(Signup);
 
-
             return Ok(new RegisterResponse
             {
                 Id = newUser.Id,
                 Firstname = newUser.FirstName,
                 Lastname = newUser.LastName,
                 Username = newUser.UserName,
-                Email = newUser.Email
+                Email = newUser.Email,
             });
         }
+
 
         [HttpPost("login")]
         public async Task<ActionResult<string>> Login(LoginUserDto request)

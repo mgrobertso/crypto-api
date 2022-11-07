@@ -40,6 +40,20 @@ namespace Crypto.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "market_data",
+                columns: table => new
+                {
+                    id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    current_price = table.Column<int>(type: "int", nullable: true),
+                    high_24h = table.Column<int>(type: "int", nullable: true),
+                    low_24h = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_market_data", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
@@ -54,6 +68,29 @@ namespace Crypto.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Details",
+                columns: table => new
+                {
+                    id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    symbol = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    asset_platform_id = table.Column<int>(type: "int", nullable: true),
+                    block_time_in_minutes = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    hashing_algorithm = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    market_cap_rank = table.Column<int>(type: "int", nullable: true),
+                    _market_Dataid = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Details", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_Details_market_data__market_Dataid",
+                        column: x => x._market_Dataid,
+                        principalTable: "market_data",
+                        principalColumn: "id");
                 });
 
             migrationBuilder.CreateTable(
@@ -76,6 +113,11 @@ namespace Crypto.Data.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Details__market_Dataid",
+                table: "Details",
+                column: "_market_Dataid");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_WatchList_UserId",
                 table: "WatchList",
                 column: "UserId");
@@ -87,7 +129,13 @@ namespace Crypto.Data.Migrations
                 name: "Crypto");
 
             migrationBuilder.DropTable(
+                name: "Details");
+
+            migrationBuilder.DropTable(
                 name: "WatchList");
+
+            migrationBuilder.DropTable(
+                name: "market_data");
 
             migrationBuilder.DropTable(
                 name: "Users");

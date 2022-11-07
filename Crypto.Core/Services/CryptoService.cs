@@ -83,5 +83,11 @@ namespace Crypto.Core.Services
             List<CryptoModel> cryptos = await _context.Crypto.ToListAsync();
             return cryptos;
         }
+
+        async Task<List<CryptoModel>> ICryptoService.GetTrend()
+        {
+            List<CryptoModel> cryptos =  _context.Crypto.Where(x => x.market_cap_rank > 0 && x.market_cap_rank< 100).ToList();
+            return cryptos;
+        }
     }
 }
