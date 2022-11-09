@@ -88,6 +88,7 @@ namespace Crypto.Core.Services
             {
                 Email = user.Email,
                 UserName = user.UserName,
+                Id = user.Id,
                 PasswordHash = user.PasswordHash,
                 PasswordSalt = user.PasswordSalt
             }).FirstOrDefault();
@@ -124,7 +125,7 @@ namespace Crypto.Core.Services
    
 
             User user = new User();
-            user.Id = new Guid();
+            user.Id = Guid.NewGuid();
             user.UserName = NewUser.Username;
             user.Email = NewUser.Email;
             user.FirstName = NewUser.FirstName;

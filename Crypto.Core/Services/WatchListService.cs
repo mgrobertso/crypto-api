@@ -26,7 +26,7 @@ namespace Crypto.Core.Services
                 list.Id = Guid.NewGuid();
                 list.Coin = name;
                 list.WatchId = id;
-                await _context.WatchList.AddAsync(list);
+                 _context.WatchList.Add(list);
                  _context.SaveChanges();
             }
         }
@@ -39,7 +39,7 @@ namespace Crypto.Core.Services
 
         public async void remove(Guid id, string name)
         {
-            var WatchList = await _context.WatchList.Where(x => x.WatchId == id && x.Coin == name).FirstOrDefaultAsync();
+            var WatchList = _context.WatchList.Where(x => x.WatchId == id && x.Coin == name).FirstOrDefault();
             if (WatchList != null)
             {
                 _context.WatchList.Remove(WatchList);
