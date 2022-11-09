@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace crypto_api.Controllers
 {
-    [EnableCors("CrosPolicy")]
+    [EnableCors("CorsPolicy")]
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
@@ -15,7 +15,7 @@ namespace crypto_api.Controllers
         private readonly IMapper _mapper;
         private readonly IAuthService _authService;
 
-        public AuthController( IMapper mapper, IAuthService authService)
+        public AuthController(IMapper mapper, IAuthService authService)
         {
             _mapper = mapper;
             _authService = authService;

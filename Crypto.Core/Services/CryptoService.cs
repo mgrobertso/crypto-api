@@ -74,20 +74,33 @@ namespace Crypto.Core.Services
         public async Task<CryptoModel> Get(string id)
         {
             var crypto = await _context.Crypto.Where(x => x.id == id).FirstOrDefaultAsync();
+            
 
             return crypto;
         }
 
         public async Task<List<CryptoModel>> GetAll()
         {
-            List<CryptoModel> cryptos = await _context.Crypto.ToListAsync();
+            List<CryptoModel> cryptos = await _context.Crypto.OrderByDescending(x=>x.market_cap).ToListAsync();
             return cryptos;
         }
 
         async Task<List<CryptoModel>> ICryptoService.GetTrend()
         {
-            List<CryptoModel> cryptos =  _context.Crypto.Where(x => x.market_cap_rank > 0 && x.market_cap_rank< 100).ToList();
+            List<CryptoModel> cryptos =  await _context.Crypto.Where(x => x.market_cap_rank > 0 && x.market_cap_rank <= 250 && x.market_cap != 0).OrderByDescending(x=>x.market_cap).ToListAsync();
             return cryptos;
         }
+
+        public async Task<List<CryptoModel>> BigWinner()
+        {
+            List<CryptoModel> cryptos = await _context.Crypto.OrderByDescending(x => x.price_change_24h).Where(x=>x.price_change_24h>=10 && x.market_cap != 0).ToListAsync();
+            return cryptos;
+        }
+        public async Task<List<CryptoModel>> BigLoser()
+        {
+            List<CryptoModel> cryptos = await _context.Crypto.OrderByDescending(x => x.price_change_24h).Where(x => x.price_change_24h <= 10 &&x.price_change_24h>0&&x.market_cap!=0).ToListAsync();
+            return cryptos;
+        }
+
     }
 }

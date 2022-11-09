@@ -10,8 +10,9 @@ namespace Crypto.Core.Services
 {
     public interface IWatchListService
     {
-        Task<WatchList> Get(Guid user);
-        void add(Guid id ,string name);
-        void remove(Guid id, string  name);
+
+        Task<List<WatchList>> get(Guid id);
+        void add(Guid id, string name);
+        void remove(Guid id, string name);
     }
 }

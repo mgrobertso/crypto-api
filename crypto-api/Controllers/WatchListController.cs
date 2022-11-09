@@ -1,12 +1,14 @@
 ﻿using Crypto.Core.Services;
 using Crypto.Data.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
 namespace crypto_api.Controllers
 {
+    [EnableCors("CorsPolicy")]
     [Route("api/[controller]")]
     [ApiController]
     public class WatchListController : ControllerBase
@@ -24,22 +26,41 @@ namespace crypto_api.Controllers
         {
             var id = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value;
 
-            var list = await _watchList.Get(Guid.Parse(id));
+            var list = await _watchList.get(Guid.Parse(id));
 
             return Ok(list);
         }
 
         [Authorize]
-        [HttpPost]
-        public async Task<ActionResult> AddList( string[]list)
+        [HttpPost("add")]
+        public async Task<ActionResult> AddList(string[] list)
         {
             var id = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value;
-            foreach(string item in list)
+
+
+            foreach (string item in list)
             {
-                 _watchList.add(Guid.Parse(id), item);
+
+                _watchList.add(Guid.Parse(id), item);
             }
- 
+
+            var watchlist = await _watchList.get(Guid.Parse(id));
+
+            return Ok(watchlist);
+        }
+
+        [Authorize]
+        [HttpPost("remove")]
+        public async Task<ActionResult> RemoveList(string[] list)
+        {
+            var id = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value;
+            foreach (string item in list)
+            {
+                _watchList.remove(Guid.Parse(id), item);
+            }
+
             return Ok(list);
         }
+
     }
 }

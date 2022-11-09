@@ -59,7 +59,6 @@ namespace Crypto.Data.Migrations
             modelBuilder.Entity("Crypto.Data.Models.CryptoDetails+market_data", b =>
                 {
                     b.Property<string>("id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int?>("current_price")
@@ -184,7 +183,7 @@ namespace Crypto.Data.Migrations
 
             modelBuilder.Entity("Crypto.Data.Models.WatchList", b =>
                 {
-                    b.Property<Guid>("WatchId")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
@@ -192,13 +191,14 @@ namespace Crypto.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid?>("UserId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("WatchId");
+                    b.Property<Guid>("WatchId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("UserId");
 

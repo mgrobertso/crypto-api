@@ -5,11 +5,9 @@ using Crypto.Data.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
-using NuGet.Common;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
-using System.Xml.Linq;
 
 namespace Crypto.Core.Services
 {
@@ -111,7 +109,7 @@ namespace Crypto.Core.Services
 
 
             string token = CreateToken(user);
-            return (new AuthenticatedResponse { Token = token });
+            return (new AuthenticatedResponse{ Token = token });
 
         }
 

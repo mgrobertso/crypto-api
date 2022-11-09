@@ -97,14 +97,14 @@ namespace Crypto.Data.Migrations
                 name: "WatchList",
                 columns: table => new
                 {
-                    WatchId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    WatchId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Coin = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_WatchList", x => x.WatchId);
+                    table.PrimaryKey("PK_WatchList", x => x.Id);
                     table.ForeignKey(
                         name: "FK_WatchList_Users_UserId",
                         column: x => x.UserId,

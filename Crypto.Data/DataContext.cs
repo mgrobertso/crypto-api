@@ -24,9 +24,9 @@ namespace Crypto.Data
             {
                 entity.Property(e => e.id).ValueGeneratedOnAdd();
             });
-            builder.Entity<CryptoDetails.market_data>(entity =>
+            builder.Entity<WatchList>(entity =>
             {
-                entity.Property(e => e.id).ValueGeneratedOnAdd();
+                entity.Property(e => e.WatchId).ValueGeneratedOnAdd();
             });
         }
 

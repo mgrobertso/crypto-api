@@ -9,17 +9,16 @@ using Mapper = Crypto.Core.Configurations.Mapper;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var cros = "CrosPolicy";
+var cros = "CorsPolicy";
 // Add services to the container
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(name: cros,
-        policy =>
-      {
-          policy.WithOrigins("http://localhost:4200")
-         .AllowAnyMethod()
-         .AllowAnyHeader();
-      });
+    options.AddPolicy(name: cros, builder =>
+    {
+        builder.AllowAnyOrigin()
+        .AllowAnyHeader()
+        .AllowAnyMethod();
+    });
 });
 builder.Services.AddControllers();
 builder.Services.AddDbContext<DataContext>(options =>
@@ -27,7 +26,7 @@ builder.Services.AddDbContext<DataContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
-var config = new MapperConfiguration(cfg=>
+var config = new MapperConfiguration(cfg =>
 {
     cfg.AddProfile(new Mapper());
 });
@@ -65,6 +64,8 @@ builder.Services.AddAuthentication(opt =>
 
 var app = builder.Build();
 
+
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -72,11 +73,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseExceptionHandler("/Error");
-app.UseCors(cros);
-app.UseHttpsRedirection();
-app.UseAuthentication();
-app.UseAuthorization();
 
 
 
@@ -101,6 +97,12 @@ app.MapMethods("/background", new[] { "PATCH" },
 
 
 app.MapControllers();
+app.UseExceptionHandler("/Error");
+app.UseCors(cros);
+app.UseHttpsRedirection();
+app.UseAuthentication();
+app.UseAuthorization();
+
 
 
 app.Run();

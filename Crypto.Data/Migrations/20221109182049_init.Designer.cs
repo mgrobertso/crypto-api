@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Crypto.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20221101144421_init")]
+    [Migration("20221109182049_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -61,7 +61,6 @@ namespace Crypto.Data.Migrations
             modelBuilder.Entity("Crypto.Data.Models.CryptoDetails+market_data", b =>
                 {
                     b.Property<string>("id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int?>("current_price")
@@ -186,7 +185,7 @@ namespace Crypto.Data.Migrations
 
             modelBuilder.Entity("Crypto.Data.Models.WatchList", b =>
                 {
-                    b.Property<Guid>("WatchId")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
@@ -194,13 +193,14 @@ namespace Crypto.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid?>("UserId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("WatchId");
+                    b.Property<Guid>("WatchId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("UserId");
 
